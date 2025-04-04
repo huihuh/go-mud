@@ -13,6 +13,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/flw-cn/printer"
+	"github.com/huihuh/go-mud/translate"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/encoding/traditionalchinese"
@@ -139,7 +140,12 @@ func (mud *Server) tryDecode(r io.Reader) string {
 	}
 
 	buf, _ = mud.decoder.Bytes(rawBuf)
-	return string(buf)
+	translated, err := translate.Translate(string(buf)) // 调用 translate.Translate
+	if err != nil {
+		mud.screen.Printf("翻译错误: %v\n", err) // 打印错误信息
+		return string(buf)                   // 返回原始字符串或处理错误
+	}
+	return translated
 }
 
 func (mud *Server) telnetNegotiate(m IACMessage) {

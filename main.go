@@ -97,7 +97,10 @@ LOOP:
 				break LOOP
 			}
 		case cmd := <-c.ui.Input():
-			c.DoCmd(cmd)
+			cmds := strings.Split(cmd, ";")
+			for _, s := range cmds {
+				c.DoCmd(s)
+			}
 		}
 	}
 
@@ -106,6 +109,7 @@ LOOP:
 }
 
 func (c *Client) DoCmd(cmd string) {
+
 	switch cmd {
 	case "exit", "quit":
 		c.quit <- true
